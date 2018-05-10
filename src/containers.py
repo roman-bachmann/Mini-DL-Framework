@@ -1,4 +1,5 @@
 from module import Module
+from losses import LossMSE
 
 class Sequential(Module):
 
@@ -11,13 +12,17 @@ class Sequential(Module):
     def add_module(self, module):
         self.module_list.append(module)
 
-    def forward(self , *input):
-        for module in module_list:
+    def forward(self, input):
+        for module in self.module_list:
             input = module.forward(input)
         return input
 
-    def backward(self , *gradwrtoutput):
-        raise  NotImplementedError
+    def backward(self, grad_wrt_output):
+        for module in self.module_list[::-1]:
+            grad_wrt_output = module.backward(grad_wrt_output)
 
     def param(self):
-        return  []
+        param_list = []
+        for module in self.module_list:
+            param_list = param_list + module.param()
+        return param_list
