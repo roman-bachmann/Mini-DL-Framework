@@ -14,3 +14,6 @@ class LossMSE():
 
     def apply(self, predictions, targets):
         return self.loss(predictions, targets), self.loss_prime(predictions, targets)
+
+# class CrossEntropyLoss
+# class LossMAE

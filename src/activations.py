@@ -41,21 +41,26 @@ class ReLU(Module):
         return []
 
 
-def tanh(input, x):
-    pass
+def tanh_prime(x):
+    return 1 - math.tanh(x)**2
 
 class Tanh(Module):
-    def forward(self , *input):
-        raise  NotImplementedError
+    def _init_(self):
+        super(Tanh, self)._init_()
 
-    def backward(self , *grad_wrt_output):
-        raise  NotImplementedError
+    def forward(self, input):
+        self.input = input
+        return FloatTensor(list(map(math.tanh, input)))
+
+    def backward(self, grad_wrt_output):
+        return FloatTensor(list(map(tanh_prime, self.input))) * grad_wrt_output
 
     def param(self):
-        return  []
+        return []
+
 
 def sigmoid(x):
-    return 1 / (1 + math.exp(-x))
+    return 1 / (1 + math.exp(-x)) if x > -50 else 0.0
 
 def sigmoid_prime(x):
     return sigmoid(x) * (1 - sigmoid(x))
@@ -73,3 +78,21 @@ class Sigmoid(Module):
 
     def param(self):
         return []
+
+
+# class Softmax(Module):
+#     def _init_(self):
+#         super(Sigmoid, self)._init_()
+#
+#     def forward(self, input):
+#         self.input = input
+#         exp_input = (input - input.max()).exp()
+#         return exp_input / exp_input.sum()
+#
+#     def backward(self, grad_wrt_output):
+#         return FloatTensor(list(map(softmax_prime, self.input))) * grad_wrt_output
+#
+#     def param(self):
+#         return []
+
+# class LeakyRelu...

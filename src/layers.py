@@ -36,3 +36,6 @@ class Linear(Module):
 
     def param(self):
         return [self.w] if self.bias is None else [self.w, self.bias]
+
+# class RNN
+# class Dropout
