@@ -39,6 +39,17 @@ model = containers.Sequential(
 
 criterion = losses.LossMSE()
 
+def compute_nb_errors(model, data_input, data_target):
+    n_misclassified = 0
+    for input, target in zip(data_input, data_target):
+        output = model.forward(input)
+        output_class = output.max(0)[1][0]
+        target_class = target.max(0)[1][0]
+        if output_class != target_class:
+            n_misclassified = n_misclassified + 1
+    error = n_misclassified / len(data_input)
+    return error
+
 def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, verbose=0):
     for e in range(n_epochs):
         sum_loss = 0
@@ -54,4 +65,6 @@ def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, verbose=
         if verbose:
             print(e, sum_loss)
 
-train_model(model, x_train, y_train, n_epochs=10, eta=0.1, verbose=1)
+train_model(model, x_train, y_train, n_epochs=250, eta=0.1, verbose=1)
+error = compute_nb_errors(model, x_test, y_test)
+print('Test error: {:.2f}%'.format(error*100))
