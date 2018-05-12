@@ -37,24 +37,24 @@ model = containers.Sequential(
 criterion = losses.LossMSE()
 
 def compute_nb_errors(model, data_input, data_target):
+    mini_batch_size = 100
     n_misclassified = 0
-    for input, target in zip(data_input, data_target):
-        output = model.forward(input)
-        output_class = output.max(0)[1][0]
-        target_class = target.max(0)[1][0]
-        if output_class != target_class:
-            n_misclassified = n_misclassified + 1
-    error = n_misclassified / len(data_input)
+    for b in range(0, data_input.size(0), mini_batch_size):
+        batch_output = model.forward(data_input.narrow(0, b, mini_batch_size))
+        batch_target = data_target.narrow(0, b, mini_batch_size)
+        output_class = batch_output.max(1)[1]
+        target_class = batch_target.max(1)[1]
+        n_misclassified += (output_class != target_class).sum()
+    error = n_misclassified / data_input.size(0)
     return error
 
-def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, verbose=0):
+def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, batch_size=100, verbose=0):
     for e in range(n_epochs):
         sum_loss = 0
-
-        for x, y in zip(train_input, train_target):
-            output = model.forward(x)
-            loss, grad_wrt_output = criterion(output, y)
-            sum_loss += loss
+        for b in range(0, train_input.size(0), batch_size):
+            output = model.forward(train_input.narrow(0, b, batch_size))
+            loss, grad_wrt_output = criterion(output, train_target.narrow(0, b, batch_size))
+            sum_loss = sum_loss + loss
             model.zero_grad()
             model.backward(grad_wrt_output)
             for p in model.param():
@@ -62,7 +62,7 @@ def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, verbose=
         if verbose:
             print(e, sum_loss)
 
-train_model(model, x_train, y_train, n_epochs=150, eta=0.005, verbose=1)
+train_model(model, x_train, y_train, n_epochs=300, eta=0.001, batch_size=100, verbose=1)
 
 error = compute_nb_errors(model, x_train, y_train)
 print('Train error: {:.2f}%'.format(error*100))

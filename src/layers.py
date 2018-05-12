@@ -23,16 +23,17 @@ class Linear(Module):
 
     def forward(self, input):
         self.input = input
-        out = self.w.value.mv(input)
+        out = input.mm(self.w.value.t())
         if self.bias is not None:
             out += self.bias.value
         return out
 
     def backward(self, grad_wrt_output):
         if self.bias is not None:
-            self.bias.grad = grad_wrt_output
-        self.w.grad = grad_wrt_output.view(-1,1).mm(self.input.view(1,-1))
-        return self.w.value.t().mv(grad_wrt_output) # Gradient wrt Linear Layer input
+            self.bias.grad = grad_wrt_output.sum(0)
+        self.w.grad = grad_wrt_output.t().mm(self.input)
+        return grad_wrt_output.mm(self.w.value) # Gradient wrt Linear Layer input
+
 
     def param(self):
         return [self.w] if self.bias is None else [self.w, self.bias]

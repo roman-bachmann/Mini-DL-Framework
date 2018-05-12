@@ -41,29 +41,20 @@ class ReLU(Module):
         return []
 
 
-def tanh_prime(x):
-    return 1 - math.tanh(x)**2
-
 class Tanh(Module):
     def _init_(self):
         super(Tanh, self)._init_()
 
     def forward(self, input):
         self.input = input
-        return FloatTensor(list(map(math.tanh, input)))
+        return input.tanh()
 
     def backward(self, grad_wrt_output):
-        return FloatTensor(list(map(tanh_prime, self.input))) * grad_wrt_output
+        return (1 - self.input.tanh().pow(2)) * grad_wrt_output
 
     def param(self):
         return []
 
-
-def sigmoid(x):
-    return 1 / (1 + math.exp(-x)) if x > -50 else 0.0
-
-def sigmoid_prime(x):
-    return sigmoid(x) * (1 - sigmoid(x))
 
 class Sigmoid(Module):
     def _init_(self):
@@ -71,10 +62,11 @@ class Sigmoid(Module):
 
     def forward(self, input):
         self.input = input
-        return FloatTensor(list(map(sigmoid, input)))
+        return 1 / (1 + (-input).exp())
 
     def backward(self, grad_wrt_output):
-        return FloatTensor(list(map(sigmoid_prime, self.input))) * grad_wrt_output
+        s = 1 / (1 + (-self.input).exp())
+        return (s * (1 - s)) * grad_wrt_output
 
     def param(self):
         return []

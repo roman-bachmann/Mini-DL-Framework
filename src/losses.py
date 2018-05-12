@@ -10,7 +10,7 @@ class LossMSE():
         return -2 * (targets.float() - predictions)
 
     def loss(self, predictions, targets):
-        return (predictions - targets.float()).pow(2).sum()
+        return (predictions - targets.float()).pow(2).sum(1).mean()
 
     def apply(self, predictions, targets):
         return self.loss(predictions, targets), self.loss_prime(predictions, targets)
