@@ -1,13 +1,12 @@
 class Module(object):
+    def __init__(self):
+        self.training = True
 
-    def __init__(self, *modules):
-        pass
-
-    def forward(self , *input):
+    def forward(self, input):
         # Should get for input, and returns, a tensor or a tuple of tensors.
         raise NotImplementedError
 
-    def backward(self , *grad_wrt_output):
+    def backward(self, grad_wrt_output):
         # Should  get  as  input  a  tensor  or  a  tuple  of  tensors  containing  the  gradient  of  the  loss
         # with respect to the module’s output, accumulate the gradient wrt the parameters, and return a
         # tensor or a tuple of tensors containing the gradient of the loss wrt the module’s input.

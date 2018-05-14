@@ -5,7 +5,9 @@ def xavier_normal(tensor):
     return tensor.normal_(0, std_dev)
 
 def xavier_uniform(tensor):
-    std_dev = math.sqrt(2 / (tensor.shape[0] + tensor.shape[1]))
+    std_dev = math.sqrt(6 / (tensor.shape[0] + tensor.shape[1]))
     return tensor.uniform_(-std_dev, std_dev)
 
-# TODO: other inits?
+def uniform_init(tensor):
+    std_dev = math.sqrt(3 / tensor.shape[1])
+    return tensor.uniform_(-std_dev, std_dev)

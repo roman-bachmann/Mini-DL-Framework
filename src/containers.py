@@ -12,6 +12,14 @@ class Sequential(Module):
     def add_module(self, module):
         self.module_list.append(module)
 
+    def train(self):
+        for module in self.module_list:
+            module.training = True
+
+    def eval(self):
+        for module in self.module_list:
+            module.training = False
+
     def forward(self, input):
         for module in self.module_list:
             input = module.forward(input)

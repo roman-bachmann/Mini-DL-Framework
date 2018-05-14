@@ -26,10 +26,13 @@ y_test = convert_to_one_hot_labels(x_train, y_test, -1)
 model = containers.Sequential(
             layers.Linear(2, 25, with_bias=True),
             activations.ReLU(),
+            layers.Dropout(0.3),
             layers.Linear(25, 25, with_bias=True),
             activations.ReLU(),
+            layers.Dropout(0.3),
             layers.Linear(25, 25, with_bias=True),
             activations.ReLU(),
+            layers.Dropout(0.3),
             layers.Linear(25, 2, with_bias=True),
             activations.Tanh()
 )
@@ -62,8 +65,10 @@ def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, batch_si
         if verbose:
             print(e, sum_loss)
 
+model.train()
 train_model(model, x_train, y_train, n_epochs=300, eta=0.001, batch_size=100, verbose=1)
 
+model.eval()
 error = compute_nb_errors(model, x_train, y_train)
 print('Train error: {:.2f}%'.format(error*100))
 
