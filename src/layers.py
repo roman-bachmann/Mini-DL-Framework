@@ -34,7 +34,6 @@ class Linear(Module):
         self.w.grad = grad_wrt_output.t().mm(self.input)
         return grad_wrt_output.mm(self.w.value) # Gradient wrt Linear Layer input
 
-
     def param(self):
         return [self.w] if self.bias is None else [self.w, self.bias]
 
@@ -48,16 +47,13 @@ class Dropout(Module):
     def forward(self, input):
         if not self.training:
             return input
-        self.mask = (input.new(input.shape).uniform_(0,1) - self.p) < 0
-        return input.clone().masked_fill_(self.mask, 0) / (1 - self.p)
+        self.mask = input.new(input.shape).bernoulli_(1 - self.p)
+        return input * self.mask / (1 - self.p)
 
     def backward(self, grad_wrt_output):
         if not self.training:
             return grad_wrt_output
-        return grad_wrt_output.clone().masked_fill_(self.mask, 0) / (1 - self.p)
+        return grad_wrt_output * self.mask / (1 - self.p)
 
     def param(self):
         return []
-
-
-# class RNN

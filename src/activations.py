@@ -72,19 +72,4 @@ class Sigmoid(Module):
         return []
 
 
-# class Softmax(Module):
-#     def _init_(self):
-#         super(Sigmoid, self)._init_()
-#
-#     def forward(self, input):
-#         self.input = input
-#         exp_input = (input - input.max()).exp()
-#         return exp_input / exp_input.sum()
-#
-#     def backward(self, grad_wrt_output):
-#         return FloatTensor(list(map(softmax_prime, self.input))) * grad_wrt_output
-#
-#     def param(self):
-#         return []
-
 # class LeakyRelu...
