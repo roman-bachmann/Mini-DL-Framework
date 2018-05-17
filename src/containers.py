@@ -19,7 +19,7 @@ class Sequential(Module):
     Forward and backward passes can be called and do not have to be implemented oneself.
 
     Args:
-        *modules (): Several neural network layers and activations
+        *modules (Module): Several neural network layers and activations
     '''
     def __init__(self, *modules):
         super(Sequential, self).__init__()

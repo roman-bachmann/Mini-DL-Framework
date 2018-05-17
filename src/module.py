@@ -1,7 +1,5 @@
 class Module(object):
-    '''
-    Abstract Module class specifying the functions all modules should implement.
-    '''
+    ''' Abstract Module class specifying the functions all modules should implement. '''
     def __init__(self):
         # Flag needed for layers that are training / evaluating dependent
         self.training = True
@@ -35,8 +33,6 @@ class Module(object):
         return []
 
     def zero_grad(self):
-        '''
-        Sets all Parameter gradients to zero.
-        '''
+        ''' Sets all Parameter gradients to zero. '''
         for p in self.param():
             p.grad.zero_()

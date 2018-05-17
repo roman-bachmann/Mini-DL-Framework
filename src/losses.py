@@ -1,7 +1,5 @@
 class LossMSE():
-    '''
-    Mean Squared Error loss function
-    '''
+    ''' Mean Squared Error loss function '''
     def __init__(self):
         self.__class__.__call__ = self.apply
 
