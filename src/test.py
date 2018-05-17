@@ -50,7 +50,7 @@ def compute_nb_errors(model, data_input, data_target):
     error = n_misclassified / data_input.size(0)
     return error
 
-def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, batch_size=100, verbose=0):
+def train_model(model, train_input, train_target, optimizer, n_epochs=10, batch_size=100, verbose=0):
     for e in range(n_epochs):
         sum_loss = 0
         for b in range(0, train_input.size(0), batch_size):
@@ -59,15 +59,12 @@ def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, batch_si
             sum_loss = sum_loss + loss
             model.zero_grad()
             model.backward(grad_wrt_output)
-            # For gradient update without optimizer:
-            # for p in model.param():
-            #     p.value = p.value - eta * p.grad
             optimizer.step()
         if verbose:
             print(e, sum_loss)
 
 model.train()
-train_model(model, x_train, y_train, n_epochs=300, eta=0.001, batch_size=100, verbose=1)
+train_model(model, x_train, y_train, optimizer, n_epochs=300, batch_size=100, verbose=1)
 
 model.eval()
 error = compute_nb_errors(model, x_train, y_train)

@@ -1,5 +1,23 @@
 import math
 
+class SGD():
+    '''
+    Standard SGD (Stochastic Gradient Descent) optimizer.
+    Updates weights using:
+    new_weight = old_weight - learning_rate * gradient
+
+    Args:
+        learning_rate (float, optional): Learning rate for weight update
+    '''
+    def __init__(self, params, learning_rate=0.001):
+        self.params = params
+        self.learning_rate = learning_rate
+
+    def step(self):
+        ''' Performs the optimization step and updates all parameters accordingly. '''
+        for p in self.params:
+            p.value -= self.learning_rate * p.grad
+
 class RMSProp():
     '''
     RMSProp (Root Mean Squared Propagation) optimizer as proposed by Geoffrey Hinton in
