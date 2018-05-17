@@ -1,14 +1,9 @@
-from torch import FloatTensor
 from module import Module
-import math
-
 
 def relu(input, inplace=False):
     '''
     Args:
-
         input (FloatTensor): Any FloatTensor to apply ReLU activation on
-
         inplace (bool, optional): Will operate inplace if True
     '''
     mask = input < 0
@@ -25,8 +20,9 @@ def relu(input, inplace=False):
     return output.masked_scatter_(mask, input)
     '''
 
-# ReLU(x)= max(0, x)
 class ReLU(Module):
+    ''' Layer that applies the ReLU activation function to the input.
+    ReLU(x)= max(0, x) '''
     def _init_(self):
         super(ReLU, self)._init_()
 
@@ -42,6 +38,7 @@ class ReLU(Module):
 
 
 class Tanh(Module):
+    ''' Layer that applies the Tanh activation function to the input. '''
     def _init_(self):
         super(Tanh, self)._init_()
 
@@ -57,6 +54,8 @@ class Tanh(Module):
 
 
 class Sigmoid(Module):
+    ''' Layer that applies the Sigmoid activation function to the input.
+    sigmoid(x) = 1 / (1 + e^(-x))'''
     def _init_(self):
         super(Sigmoid, self)._init_()
 
@@ -70,6 +69,3 @@ class Sigmoid(Module):
 
     def param(self):
         return []
-
-
-# class LeakyRelu...
