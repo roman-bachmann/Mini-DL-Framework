@@ -1,6 +1,9 @@
+import torch
+from torch.autograd import Variable
 from torch import FloatTensor, LongTensor
 import layers, losses, containers, activations, optimizers
 import math
+import time
 
 def generate_disc_set(nb):
     '''Generates random nb*2-dim input data and nb-dim
@@ -22,6 +25,9 @@ def convert_to_one_hot_labels(input, target, zero_value=0):
 
 y_train = convert_to_one_hot_labels(x_train, y_train, -1)
 y_test = convert_to_one_hot_labels(x_train, y_test, -1)
+
+
+### Testing the speed of our own framework ###
 
 # Defining the model architecture
 model = containers.Sequential(
@@ -64,11 +70,50 @@ def train_model(model, train_input, train_target, optimizer, n_epochs=10, batch_
             print(e, sum_loss)
 
 model.train()
-train_model(model, x_train, y_train, optimizer, n_epochs=300, batch_size=100, verbose=1)
+print('Starting mini-framework training...')
+start = time.time()
+train_model(model, x_train, y_train, optimizer, n_epochs=300, batch_size=100, verbose=0)
+end = time.time()
+print('Training time: {}s'.format(end-start))
 
-model.eval()
-error = compute_nb_errors(model, x_train, y_train)
-print('Train error: {:.2f}%'.format(error*100))
 
-error = compute_nb_errors(model, x_test, y_test)
-print('Test error: {:.2f}%'.format(error*100))
+### Testing the speed of the same network in PyTorch ###
+
+# Defining the model architecture
+model = torch.nn.Sequential(
+            torch.nn.Linear(2, 25, bias=True),
+            torch.nn.ReLU(),
+            torch.nn.Linear(25, 25, bias=True),
+            torch.nn.ReLU(),
+            torch.nn.Linear(25, 25, bias=True),
+            torch.nn.ReLU(),
+            torch.nn.Linear(25, 2, bias=True),
+            torch.nn.Tanh()
+)
+
+criterion = torch.nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+
+def train_model_pytorch(model, train_input, train_target, optimizer, n_epochs=10, batch_size=100, verbose=0):
+    for e in range(n_epochs):
+        sum_loss = 0
+        for b in range(0, train_input.size(0), batch_size):
+            output = model.forward(train_input.narrow(0, b, batch_size))
+            loss = criterion(output, train_target.narrow(0, b, batch_size))
+            sum_loss = sum_loss + loss.data[0]
+            model.zero_grad()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+        if verbose:
+            print(e, sum_loss)
+
+x_train = Variable(x_train, requires_grad=True)
+y_train = Variable(y_train, requires_grad=False)
+
+model.train()
+print('Starting PyTorch training...')
+start = time.time()
+train_model_pytorch(model, x_train, y_train, optimizer, n_epochs=300, batch_size=100, verbose=0)
+end = time.time()
+print('Training time: {}s'.format(end-start))
