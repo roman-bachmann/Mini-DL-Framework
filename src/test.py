@@ -1,5 +1,5 @@
 from torch import FloatTensor, LongTensor
-import layers, losses, containers, activations
+import layers, losses, containers, activations, optimizers
 import math
 
 def generate_disc_set(nb):
@@ -23,6 +23,7 @@ def convert_to_one_hot_labels(input, target, zero_value=0):
 y_train = convert_to_one_hot_labels(x_train, y_train, -1)
 y_test = convert_to_one_hot_labels(x_train, y_test, -1)
 
+# Defining the model architecture
 model = containers.Sequential(
             layers.Linear(2, 25, with_bias=True),
             activations.ReLU(),
@@ -35,6 +36,7 @@ model = containers.Sequential(
 )
 
 criterion = losses.LossMSE()
+optimizer = optimizers.Adam(model.param(), learning_rate=0.001, p1=0.9, p2=0.999)
 
 def compute_nb_errors(model, data_input, data_target):
     mini_batch_size = 100
@@ -57,8 +59,10 @@ def train_model(model, train_input, train_target, n_epochs=10, eta=0.1, batch_si
             sum_loss = sum_loss + loss
             model.zero_grad()
             model.backward(grad_wrt_output)
-            for p in model.param():
-                p.value = p.value - eta * p.grad
+            # For gradient update without optimizer:
+            # for p in model.param():
+            #     p.value = p.value - eta * p.grad
+            optimizer.step()
         if verbose:
             print(e, sum_loss)
 
