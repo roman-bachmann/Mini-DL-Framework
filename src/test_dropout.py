@@ -1,3 +1,5 @@
+# For testing the impact of adding dropout layers to an overfitting model
+
 from torch import FloatTensor, LongTensor
 import layers, losses, containers, activations, optimizers
 import math
@@ -84,8 +86,6 @@ model = containers.Sequential(
 
 criterion = losses.LossMSE()
 optimizer = optimizers.Adam(model.param(), learning_rate=0.001, p1=0.9, p2=0.999)
-
-
 
 losses_dict = train_model(model, input_sets, target_sets, optimizer, n_epochs=n_epochs, batch_size=100, verbose=1)
 

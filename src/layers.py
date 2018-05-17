@@ -49,7 +49,7 @@ class Linear(Module):
         if self.bias is not None:
             self.bias.grad = grad_wrt_output.sum(0)
         self.w.grad = grad_wrt_output.t().mm(self.input)
-        return grad_wrt_output.mm(self.w.value) # Gradient wrt Linear Layer input
+        return grad_wrt_output.mm(self.w.value)
 
     def param(self):
         return [self.w] if self.bias is None else [self.w, self.bias]

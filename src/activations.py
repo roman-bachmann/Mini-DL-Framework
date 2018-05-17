@@ -2,8 +2,11 @@ from module import Module
 
 def relu(input, inplace=False):
     '''
+    Computes ReLU(x)= max(0, x) on an input tensor
+    
     Args:
         input (FloatTensor): Any FloatTensor to apply ReLU activation on
+
         inplace (bool, optional): Will operate inplace if True
     '''
     mask = input < 0
@@ -22,7 +25,7 @@ def relu(input, inplace=False):
 
 class ReLU(Module):
     ''' Layer that applies the ReLU activation function to the input.
-    ReLU(x)= max(0, x) '''
+    ReLU(x) = max(0, x) '''
     def _init_(self):
         super(ReLU, self)._init_()
 

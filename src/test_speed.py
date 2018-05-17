@@ -1,3 +1,5 @@
+# For testing the computation speed of this framework vs PyTorch
+
 import torch
 from torch.autograd import Variable
 from torch import FloatTensor, LongTensor

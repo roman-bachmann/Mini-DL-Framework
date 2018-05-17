@@ -1,3 +1,5 @@
+# For testing the convergence of several different optimizers
+
 from torch import FloatTensor, LongTensor
 import layers, losses, containers, activations, optimizers
 import math

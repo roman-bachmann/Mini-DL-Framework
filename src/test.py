@@ -1,3 +1,5 @@
+# Main test executable. Classifies points in or outside a circle using a multilayer neural network
+
 from torch import FloatTensor, LongTensor
 import layers, losses, containers, activations, optimizers
 import math

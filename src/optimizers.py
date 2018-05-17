@@ -57,7 +57,7 @@ class RMSProp():
 class Adam():
     '''
     Adam (Adaptive Moment Estimation) optimizer, adaptively computing learning rates
-    for each weight.
+    for each weight as proposed by Kingma and Ba in https://arxiv.org/abs/1412.6980
 
     Args:
         params (List[Parameter]): List of Parameters to optimize
